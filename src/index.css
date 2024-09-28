@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "inter-light";
+  src: url("/public/fonts/Inter_18pt-Light.ttf");
+}
+@font-face {
+  font-family: "inter-reguler";
+  src: url("/public/fonts/Inter_28pt-Regular.ttf");
+}
+@font-face {
+  font-family: "inter-medium";
+  src: url("/public/fonts/Inter_28pt-Medium.ttf");
+}
+@font-face {
+  font-family: "inter-semiBold";
+  src: url("/public/fonts/Inter_28pt-SemiBold.ttf");
+}
+@font-face {
+  font-family: "inter-bold";
+  src: url("/public/fonts/Inter_28pt-Bold.ttf");
+}
+
+@font-face {
+  font-family: "inter-ExtraBold";
+  src: url("/public/fonts/Inter_28pt-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "inter-black";
+  src: url("/public/fonts/Inter_28pt-Black.ttf");
+}
+@font-face {
+  font-family: "joti-reguler";
+  src: url("/public/fonts/JotiOne-Regular.ttf");
+}
