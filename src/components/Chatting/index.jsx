@@ -3,12 +3,11 @@ import { GalleryIcon } from "../../svg/Gallery";
 import { useSelector } from "react-redux";
 import avatarImage from "../../assets/avatar.png";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import Lottie from "lottie-react";
-
-import registrationAnimation from "../../animation/emoj.json";
 import EmojiPicker from "emoji-picker-react";
+import { getDownloadURL, getStorage, ref as Ref, uploadBytesResumable } from "firebase/storage"
+import { MicrophoneIcon } from "../../svg/Microphone";
 
 const Chatting = () => {
   const user = useSelector((state) => state.login.loggedIn);
@@ -17,6 +16,8 @@ const Chatting = () => {
   const [singleMessage, setSingleMessage] = useState([]);
   const db = getDatabase();
   const [emojiShow, setEmojiShow] = useState(false)
+  const storage = getStorage();
+  const chooseFile = useRef(null)
 
   const sendMessage = () => {
     if (singleFriend?.status === "single") {
@@ -69,8 +70,42 @@ const Chatting = () => {
     }
   }, [db, singleFriend?.id]);
 
-  const handleEmojiSelect = ({emoji})=> {
+  const handleEmojiSelect = ({ emoji }) => {
     setMessage(message + emoji);
+  };
+
+  const handleImageUpload = (e) => {
+    const imageFile = e.target.files[0]
+    const storageRef = Ref(storage,
+      `${user.displayName} = "sendImageMessage/ ${imageFile}`);
+
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+
+      },
+      (error) => {
+        console.log(error)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          set(push(ref(db, "singleMessage")), {
+            senderId: user.uid,
+            senderName: user.displayName,
+            receiverId: singleFriend.id,
+            receiverName: singleFriend.name,
+            message: message,
+            image: downloadURL,
+            date: new Date().toISOString(), // Store date as ISO string
+          }).then(() => {
+            setMessage("");
+          });
+        });
+      }
+    );
   }
 
   return (
@@ -94,7 +129,7 @@ const Chatting = () => {
                 </div>
               </div>
             </div>
-            <div className="min-h-[75vh] bg-white px-6 pb-2 overflow-y-scroll scrollbar-thin scrollbar-webkit">
+            <div className="min-h-[75vh] bg-white px-6 pb-2 overflow-scroll scrollbar-thin scrollbar-webkit">
               {/* Sender Massage */}
 
               {singleFriend?.status === "single"
@@ -149,37 +184,47 @@ const Chatting = () => {
                 ))
                 : "Message Not Found!"}
             </div>
-            <div className="py-1.5 md:py-4 px-1.5 md:px-8">
-              <div className="bg-[#F5F5F5] rounded-md mx-auto py-1.5 md:py-3 px-1.5 md:px-0 grid grid-cols-[70px_auto_88px] items-center gap-x-0.5 md:gap-x-3">
-                <div className="flex items-center md:justify-end gap-x-0.5 md:gap-x-3">
-                  <div className="relative">
-                   
-                    <div className="cursor-pointer" onClick={() => setEmojiShow((prev) => !prev)}>
-                      <SmileIcon />
-                    </div>
-                    {
-                      emojiShow && (
-                        <div className=" absolute bottom-8 -left-3 shadow-xl">
-                          <EmojiPicker onEmojiClick={handleEmojiSelect} />
+            <div className="py-1.5 md:py-4  px-[25px]">
+              <div className="bg-[#F5F5F5] pl-4">
+                <div className=" ml-[15px] rounded-md mx-auto py-1.5 md:py-3 px-1.5 md:px-0 grid grid-cols-[70px_auto_88px] items-center gap-x-0.5 md:gap-x-3">
+                  <div className="flex items-center md:justify-end gap-x-0.5 md:gap-x-3">
+                    <div className="relative">
+
+                      <div className="voice flex items-center gap-2">
+                        <div className="cursor-pointer" onClick={() => setEmojiShow((prev) => !prev)}>
+                          <MicrophoneIcon />
                         </div>
-                      )}
+                        <div className="cursor-pointer" onClick={() => setEmojiShow((prev) => !prev)}>
+                          <SmileIcon />
+                        </div>
+                      </div>
+                      {
+                        emojiShow && (
+                          <div className=" absolute bottom-8 -left-3 shadow-xl">
+                            <EmojiPicker onEmojiClick={handleEmojiSelect} />
+                          </div>
+                        )}
+                    </div>
+                    <div className="cursor-pointer" onClick={() => chooseFile.current.click()}>
+                      <GalleryIcon />
+                    </div>
+                    <input ref={chooseFile} hidden type="file" onChange={handleImageUpload} />
                   </div>
-                  <GalleryIcon />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Type a message"
-                  className="outline-none bg-[#F5F5F5]"
-                  onChange={(e) => setMessage(e.target.value)}
-                  value={message}
-                />
-                <div className="md:pr-2">
-                  <button
-                    onClick={sendMessage}
-                    className="cursor-pointer w-full py-2 bg-[#3E8DEB] text-whitne rounded-md fontRegular text-lg"
-                  >
-                    Send
-                  </button>
+                  <input
+                    type="text"
+                    placeholder="Type a message"
+                    className="outline-none bg-[#F5F5F5]"
+                    onChange={(e) => setMessage(e.target.value)}
+                    value={message}
+                  />
+                  <div className="md:pr-2">
+                    <button
+                      onClick={sendMessage}
+                      className="cursor-pointer w-full py-2 bg-[#3E8DEB] text-white rounded-md fontRegular text-xl"
+                    >
+                      Send
+                    </button>
+                  </div>
                 </div>
               </div>
 

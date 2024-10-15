@@ -90,7 +90,7 @@ const Friends = () => {
                   key={index}
                   onClick={() => handellSingleChat(item)}
                 >
-                  <div className="flex items-center gap-x-2">
+                  <div className="flex items-center gap-x-2 w-full">
                     <div className="w-12 h-12 rounded-full bg-black overflow-hidden">
                       {user.uid === item.receiverId ? (
                         <img
@@ -106,11 +106,19 @@ const Friends = () => {
                         />
                       )}
                     </div>
-                    <h3 className="text-base lg:text-[23px] font-interMedium text-[#3D3C3C] capitalize">
-                      {user.uid === item.receiverId
-                        ? item.senderName
-                        : item.receiverName}
-                    </h3>
+
+                    <div className="flex items-center justify-between w-full">
+                      <h3 className="text-base lg:text-[23px] font-interMedium text-[#3D3C3C] capitalize">
+                        {user.uid === item.receiverId
+                          ? item.senderName
+                          : item.receiverName}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <button className="bg-[#4A81D3] text-white px-[30px] py-[10px] rounded-[5px]">Unfriend</button>
+                        <button className="bg-[#D34A4A] text-white px-[30px] py-[10px] rounded-[5px]">Block</button>
+                      </div>
+                    </div>
+
                   </div>
                   {location.pathname === "/" && (
                     <div className="text-black cursor-pointer flex gap-x-2 items-center">
