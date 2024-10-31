@@ -29,7 +29,7 @@ const Chatting = () => {
         message: message,
         date: new Date().toISOString(), // Store date as ISO string
       }).then(() => {
-        setMessage("");
+        setMessage(""); 
       });
       setEmojiShow(false)
     }
@@ -129,7 +129,7 @@ const Chatting = () => {
                 </div>
               </div>
             </div>
-            <div className="min-h-[75vh] bg-white px-6 pb-2 overflow-scroll scrollbar-thin scrollbar-webkit">
+            <div className="h-[660px] overflow-y-auto bg-white px-6 pb-2 overflow-scroll scrollbar-thin scrollbar-webkit">
               {/* Sender Massage */}
 
               {singleFriend?.status === "single"
@@ -138,7 +138,7 @@ const Chatting = () => {
                     {item?.senderId === user?.uid ? (
                       <div className="w-[60%] ml-auto" key={index}>
                         <div className="flex items-center gap-x-3 my-3">
-                          <div className="w-full ml-auto text-right">
+                          <div className="w-full ml-auto text-right ">
                             <p className="text-white font-reguler text-sm bg-blue-500 px-4 py-2 rounded-md inline-block">
                               {item.message}
                             </p>

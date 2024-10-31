@@ -113,10 +113,10 @@ const Friends = () => {
                           ? item.senderName
                           : item.receiverName}
                       </h3>
-                      <div className="flex items-center gap-2">
+                      {/* <div className="flex items-center gap-2">
                         <button className="bg-[#4A81D3] text-white px-[30px] py-[10px] rounded-[5px]">Unfriend</button>
                         <button className="bg-[#D34A4A] text-white px-[30px] py-[10px] rounded-[5px]">Block</button>
-                      </div>
+                      </div> */}
                     </div>
 
                   </div>
